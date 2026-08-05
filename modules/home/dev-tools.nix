@@ -15,6 +15,15 @@
         pkgs.vscode
         pkgs.claude-code
         pkgs.opencode
+
+        # Kubernetes CLI tooling. (kubecolor itself is pulled in below by
+        # programs.kubecolor.enable, not listed here.)
+        pkgs.kubectl
+        pkgs.k9s # terminal UI for browsing/managing cluster resources
+        pkgs.kubectx # adds `kubectx`/`kubens` for switching context/namespace
+        pkgs.talosctl # CLI for Talos Linux clusters
+
+        pkgs.rsync
       ];
 
       programs.git = {
@@ -30,6 +39,15 @@
       programs.gh = {
         enable = true;
         settings.git_protocol = "https";
+      };
+
+      # Wraps kubectl for colorized output; enableAlias makes `kubectl`
+      # itself resolve to kubecolor (see programs.zsh in
+      # modules/home/shell.nix for enableZshIntegration's completion glue).
+      programs.kubecolor = {
+        enable = true;
+        enableAlias = true;
+        enableZshIntegration = true;
       };
     };
 }
