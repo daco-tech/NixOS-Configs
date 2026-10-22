@@ -14,6 +14,12 @@
         wireplumber.enable = true;
       };
 
+      # `wpctl` (used by the volume/mic keybinds in modules/home/niri.nix)
+      # ships in the wireplumber package; the service module above pulls
+      # wireplumber in for the daemon but doesn't guarantee its CLI is on
+      # PATH, so add it explicitly.
+      environment.systemPackages = [ pkgs.wireplumber ];
+
       hardware.bluetooth = {
         enable = true;
         powerOnBoot = true;

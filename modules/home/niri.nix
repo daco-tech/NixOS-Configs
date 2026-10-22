@@ -18,7 +18,7 @@
   flake.homeModules.niri-user = {
     home.packages = [ ]; # add per-user extras here later
 
-    programs.foot.enable = true; # terminal (Mod+Return)
+    programs.kitty.enable = true; # terminal (Mod+Return)
     programs.fuzzel.enable = true; # lightweight fallback launcher (Mod+D)
 
     programs.niri.settings = {
@@ -35,7 +35,14 @@
       outputs."eDP-1".scale = 1.5;
 
       binds = {
-        "Mod+Return".action.spawn = "foot";
+        # Routed through `gpu-launch` (modules/home/gpu-mode.nix) so the
+        # terminal honors the bar's GPU-mode toggle without needing niri
+        # itself restarted — see that file for why a wrapper is required
+        # instead of just exporting env vars.
+        "Mod+Return".action.spawn = [
+          "gpu-launch"
+          "kitty"
+        ];
 
         # Noctalia's panels. List form (rather than `spawn-sh "..."`) so no
         # shell is involved and no quoting can go wrong — none of these need one.
@@ -51,10 +58,24 @@
           "panel-toggle"
           "control-center"
         ];
+        # Opens NetworkManager's full connection editor, including the
+        # graphical form for adding hidden Wi-Fi networks.
+        "Mod+N".action.spawn = "nm-connection-editor";
         "Mod+Comma".action.spawn = [
           "noctalia"
           "msg"
           "settings-toggle"
+        ];
+        # Same target the bar's media widget opens on a left click
+        # (control-center panel, scoped to its "media" tab). This key is
+        # drawn as "F9" but, per `wev`, sends XF86NotificationCenter by
+        # default — Fn+F9 is what sends literal F9 — so bind the real sym.
+        "XF86NotificationCenter".action.spawn = [
+          "noctalia"
+          "msg"
+          "panel-toggle"
+          "control-center"
+          "media"
         ];
         "Alt+Tab".action.spawn = [
           "noctalia"
@@ -67,6 +88,15 @@
         # "Noctalia isn't running at all".
         "Mod+D".action.spawn = "fuzzel";
 
+        # Noctalia's lock screen (modules/home/noctalia.nix) — fingerprint
+        # unlock works here, see that file's `lockscreen` comment.
+        "Mod+L".action.spawn = [
+          "noctalia"
+          "msg"
+          "session"
+          "lock"
+        ];
+
         "Mod+Q".action.close-window = { };
         "Mod+Shift+E".action.quit = { };
         "Mod+Left".action.focus-column-left = { };
@@ -76,6 +106,68 @@
         "Mod+F".action.maximize-column = { };
         "Mod+Shift+F".action.fullscreen-window = { };
         "Print".action.screenshot = { };
+
+        # Media keys. Niri, unlike DEs, does nothing with these on its own —
+        # every compositor-level key needs an explicit bind. `wpctl` (from
+        # wireplumber, modules/nixos/hardware/audio-bluetooth.nix) drives
+        # volume/mic; `brightnessctl` drives backlight and needs the `video`
+        # group + udev rule from modules/nixos/hardware/power.nix to run
+        # without root. `allow-when-locked` so they still work on the lock
+        # screen.
+        "XF86AudioRaiseVolume" = {
+          allow-when-locked = true;
+          action.spawn = [
+            "wpctl"
+            "set-volume"
+            "-l"
+            "1.0"
+            "@DEFAULT_AUDIO_SINK@"
+            "5%+"
+          ];
+        };
+        "XF86AudioLowerVolume" = {
+          allow-when-locked = true;
+          action.spawn = [
+            "wpctl"
+            "set-volume"
+            "@DEFAULT_AUDIO_SINK@"
+            "5%-"
+          ];
+        };
+        "XF86AudioMute" = {
+          allow-when-locked = true;
+          action.spawn = [
+            "wpctl"
+            "set-mute"
+            "@DEFAULT_AUDIO_SINK@"
+            "toggle"
+          ];
+        };
+        "XF86AudioMicMute" = {
+          allow-when-locked = true;
+          action.spawn = [
+            "wpctl"
+            "set-mute"
+            "@DEFAULT_AUDIO_SOURCE@"
+            "toggle"
+          ];
+        };
+        "XF86MonBrightnessUp" = {
+          allow-when-locked = true;
+          action.spawn = [
+            "brightnessctl"
+            "set"
+            "5%+"
+          ];
+        };
+        "XF86MonBrightnessDown" = {
+          allow-when-locked = true;
+          action.spawn = [
+            "brightnessctl"
+            "set"
+            "5%-"
+          ];
+        };
       };
 
       # Verify against niri-flake's docs.md if this doesn't take effect —

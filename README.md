@@ -50,14 +50,22 @@ To try changes without committing to them as the boot default:
 sudo nixos-rebuild test --flake .#x1-extreme
 ```
 
+## Continuous validation
+
+GitHub Actions validates every push and pull request. The workflow runs
+`nix flake check --no-build`, evaluates the `x1-extreme` NixOS configuration,
+and builds its system closure on a public Ubuntu runner. It does not run
+`nixos-rebuild`, change a machine, or require the target laptop's hardware.
+
 ## Notes
 
 - `system.stateVersion` (in `modules/nixos/hosts/x1-extreme.nix`) and
   `home.stateVersion` (in `modules/home/default.nix`) are set once, at
   install time, and then never bumped — see the NixOS and Home Manager
   release notes before ever touching either.
-- `users.users.dcosta.initialPassword` in `modules/nixos/core/users.nix` only
-  takes effect on account creation; run `passwd` after first login.
+- No passwords, tokens, or other credentials are stored in this repository.
+  Set the user password interactively with `passwd` before or after applying a
+  new installation.
 - PCI bus IDs for PRIME offload (`modules/nixos/hardware/graphics-hybrid.nix`)
   were set for a typical X1 Extreme Gen 4 board; confirm with
   `lspci | grep -E "VGA|3D"` if graphics don't come up correctly on new

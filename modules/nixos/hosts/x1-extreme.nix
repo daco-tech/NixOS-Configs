@@ -28,13 +28,14 @@
       config.flake.nixosModules.hw-graphics-hybrid
       config.flake.nixosModules.hw-audio-bluetooth
       config.flake.nixosModules.hw-power
+      config.flake.nixosModules.hw-hibernate
       config.flake.nixosModules.hw-fingerprint
       config.flake.nixosModules.hw-removable-media
+      config.flake.nixosModules.hw-printing
 
       config.flake.nixosModules.desktop-niri
       config.flake.nixosModules.desktop-noctalia
       config.flake.nixosModules.desktop-greetd
-      config.flake.nixosModules.desktop-pim
 
       inputs.home-manager.nixosModules.home-manager
       {

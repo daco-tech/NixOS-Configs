@@ -1,0 +1,17 @@
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Documentation-only references to secret fields and commands"
+regexes = [
+  '''(?i)(password|passwd|secret|token)'''
+]
+paths = [
+  '''README\.md''',
+  '''CLAUDE\.md''',
+  '''modules/home/noctalia\.nix''',
+  '''modules/home/mail\.nix''',
+  '''modules/nixos/core/networking\.nix''',
+  '''modules/nixos/hardware/fingerprint\.nix''',
+  '''modules/nixos/hardware/removable-media\.nix'''
+]

@@ -5,7 +5,7 @@
 # this module stands on its own too.
 {
   flake.nixosModules.hw-power =
-    { lib, ... }:
+    { lib, pkgs, ... }:
     {
       services.power-profiles-daemon.enable = lib.mkDefault true;
 
@@ -18,5 +18,16 @@
       services.fwupd.enable = true;
 
       powerManagement.enable = true;
+
+      # Backlight control (XF86MonBrightness{Up,Down} keys, see
+      # modules/home/niri.nix). /sys/class/backlight/*/brightness is
+      # root-only by default; this rule hands write access to the `video`
+      # group instead of setuid-wrapping brightnessctl, matching the `video`
+      # membership already granted in modules/nixos/core/users.nix.
+      services.udev.extraRules = ''
+        ACTION=="add", SUBSYSTEM=="backlight", RUN+="${pkgs.coreutils}/bin/chgrp video $sys$devpath/brightness", RUN+="${pkgs.coreutils}/bin/chmod g+w $sys$devpath/brightness"
+      '';
+
+      environment.systemPackages = [ pkgs.brightnessctl ];
     };
 }

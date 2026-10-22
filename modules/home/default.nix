@@ -10,12 +10,16 @@
     imports = [
       config.flake.homeModules.niri-user
       config.flake.homeModules.noctalia-user
+      config.flake.homeModules.gpu-mode-user
       config.flake.homeModules.apps-user
+      config.flake.homeModules.cura-user
       config.flake.homeModules.dev-tools-user
+      config.flake.homeModules.dev-langs-user
       config.flake.homeModules.mail-user
       config.flake.homeModules.shell-user
       config.flake.homeModules.ashell-user
       config.flake.homeModules.file-manager-user
+      config.flake.homeModules.gopro-user
     ];
 
     home.stateVersion = "25.05"; # do not bump casually — see home-manager release notes

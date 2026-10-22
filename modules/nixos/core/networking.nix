@@ -13,6 +13,11 @@
       # to latency spikes and dropped connections with powersave on.
       networking.networkmanager.wifi.powersave = false;
 
+      # Hidden SSIDs require directed probes when NetworkManager scans. Avoid
+      # randomized scan MAC addresses, which prevent some access points from
+      # responding to those probes.
+      networking.networkmanager.wifi.scanRandMacAddress = false;
+
       # Day-to-day Wi-Fi (scan, connect, forget, enter a password) is meant
       # to happen in Noctalia's own Control Center panel — it talks to
       # NetworkManager over D-Bus directly and implements its own secret

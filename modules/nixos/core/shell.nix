@@ -22,6 +22,15 @@
       environment.systemPackages = [
         pkgs.openssh # ssh/scp/sftp/ssh-keygen (not in the default package set)
         pkgs.nano # simple system-wide editor for quick edits (e.g. as root)
+
+        # Archive tools. tar/gzip/xz/bzip2 already ride along with the base
+        # system closure, so only the formats actually missing from PATH are
+        # listed here: zip/unzip, 7z (p7zip), rar/unrar, and zstd.
+        pkgs.zip
+        pkgs.unzip
+        pkgs.p7zip
+        pkgs.unrar
+        pkgs.zstd
       ];
     };
 }
